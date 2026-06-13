@@ -1,10 +1,16 @@
 # Package screenshots
 
-Add PNG files here for pub.dev. Recommended: 1280x720 or similar 16:9.
+PNG files listed in `pubspec.yaml` appear on the pub.dev package page.
 
-Suggested files:
+## Current
+
+- `preview.png` — example app grid on web (used for the initial release)
+
+## Planned
+
+Add more after the first pub.dev release, for example:
 
 - `line-chart-light.png` — interactive line chart, light theme
 - `line-chart-dark.png` — interactive line chart, dark theme
 
-After adding images, uncomment the `screenshots:` block in `pubspec.yaml`.
+Recommended size: 1280x720 or similar 16:9.

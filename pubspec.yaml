@@ -11,12 +11,9 @@ topics:
   - webview
   - data-visualization
 
-# Uncomment after adding PNG files under screenshots/
-# screenshots:
-#   - description: Interactive line chart (light theme)
-#     path: screenshots/line-chart-light.png
-#   - description: Interactive line chart (dark theme)
-#     path: screenshots/line-chart-dark.png
+screenshots:
+  - description: Example app showing shadcn_chart charts on web
+    path: screenshots/preview.png
 
 environment:
   sdk: ">=3.5.0 <4.0.0"

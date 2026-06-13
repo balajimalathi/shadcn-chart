@@ -33,9 +33,12 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
             SegmentedButton<ShadcnChartTheme>(
               showSelectedIcon: false,
               segments: const [
-                ButtonSegment(value: ShadcnChartTheme.system, label: Text('System')),
-                ButtonSegment(value: ShadcnChartTheme.light, label: Text('Light')),
-                ButtonSegment(value: ShadcnChartTheme.dark, label: Text('Dark')),
+                ButtonSegment(
+                    value: ShadcnChartTheme.system, label: Text('System')),
+                ButtonSegment(
+                    value: ShadcnChartTheme.light, label: Text('Light')),
+                ButtonSegment(
+                    value: ShadcnChartTheme.dark, label: Text('Dark')),
               ],
               selected: {_chartTheme},
               onSelectionChanged: (value) {
@@ -50,8 +53,12 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
           icon: const Icon(Icons.refresh),
           label: const Text('Refresh data'),
         ),
-        body: ListView(
+        body: GridView.count(
+          crossAxisCount: 3,
+          childAspectRatio: 1.8,
           padding: const EdgeInsets.all(16),
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
           children: [
             _ChartPanel(title: 'Interactive bar', data: _interactiveBar()),
             _ChartPanel(title: 'Multiple bar', data: _multipleBar()),
@@ -60,7 +67,6 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
             _ChartPanel(title: 'Donut pie', data: _pieDonut()),
             _ChartPanel(title: 'Legend pie', data: _pieLegend()),
             _ChartPanel(title: 'Stacked radial', data: _radial()),
-            const SizedBox(height: 80),
           ],
         ),
       ),

@@ -225,12 +225,11 @@ embedded renderer.
 
 ## Screenshots
 
-> Screenshots appear on pub.dev once image files are added under `screenshots/`
-> and listed in `pubspec.yaml`.
+Example app running on web:
 
-| Light theme | Dark theme |
-| --- | --- |
-| _coming soon_ | _coming soon_ |
+![shadcn_chart example app on web](screenshots/preview.png)
+
+More platform screenshots will be added after the first pub.dev release.
 
 ## Platform setup
 
