@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'shadcn_chart_utils.dart';
+
 /// Chart renderers bundled with this package.
 enum ShadcnChartType {
   /// Interactive area chart with a time-range selector.
@@ -65,7 +67,7 @@ class ChartSeries {
   Map<String, Object?> toJson() => {
         'key': key,
         'label': label,
-        if (color != null) 'color': _colorToCssHex(color!),
+        if (color != null) 'color': colorToCssHex(color!),
       };
 }
 
@@ -162,7 +164,7 @@ class PieChartSegment {
   Map<String, Object?> get _seriesJson => {
         'key': key,
         'label': label,
-        if (color != null) 'color': _colorToCssHex(color!),
+        if (color != null) 'color': colorToCssHex(color!),
       };
 
   Map<String, Object?> get _datumJson => {
@@ -385,11 +387,13 @@ class MultipleBarChartData extends ShadcnChartData {
 
   @override
   Map<String, Object?> toJson() => {
-        if (title != null) 'title': title,
-        if (description != null) 'description': description,
-        if (footerTitle != null) 'footerTitle': footerTitle,
-        if (footerDescription != null) 'footerDescription': footerDescription,
-        if (colors != null) 'colors': _colorsToCssHex(colors!),
+        ..._cardMetadataJson(
+          title: title,
+          description: description,
+          footerTitle: footerTitle,
+          footerDescription: footerDescription,
+          colors: colors,
+        ),
         'xKey': 'category',
         'xType': 'category',
         'series': series.map((item) => item.toJson()).toList(),
@@ -518,11 +522,13 @@ class RadialStackedChartData extends ShadcnChartData {
 
   @override
   Map<String, Object?> toJson() => {
-        if (title != null) 'title': title,
-        if (description != null) 'description': description,
-        if (footerTitle != null) 'footerTitle': footerTitle,
-        if (footerDescription != null) 'footerDescription': footerDescription,
-        if (colors != null) 'colors': _colorsToCssHex(colors!),
+        ..._cardMetadataJson(
+          title: title,
+          description: description,
+          footerTitle: footerTitle,
+          footerDescription: footerDescription,
+          colors: colors,
+        ),
         'centerLabel': centerLabel,
         'series': series.map((item) => item.toJson()).toList(),
         'data': [values],
@@ -541,7 +547,7 @@ Map<String, Object?> _cartesianTimeJson({
   return {
     if (title != null) 'title': title,
     if (description != null) 'description': description,
-    if (colors != null) 'colors': _colorsToCssHex(colors),
+    if (colors != null) 'colors': colorsToCssHex(colors),
     'valueLabel': valueLabel,
     'xKey': 'date',
     'xType': 'date',
@@ -560,15 +566,33 @@ Map<String, Object?> _pieJson({
   List<Color>? colors,
 }) {
   return {
-    if (title != null) 'title': title,
-    if (description != null) 'description': description,
-    if (footerTitle != null) 'footerTitle': footerTitle,
-    if (footerDescription != null) 'footerDescription': footerDescription,
-    if (colors != null) 'colors': _colorsToCssHex(colors),
+    ..._cardMetadataJson(
+      title: title,
+      description: description,
+      footerTitle: footerTitle,
+      footerDescription: footerDescription,
+      colors: colors,
+    ),
     'nameKey': 'name',
     'valueKey': 'value',
     'segments': segments.map((item) => item._seriesJson).toList(),
     'data': segments.map((item) => item._datumJson).toList(),
+  };
+}
+
+Map<String, Object?> _cardMetadataJson({
+  required String? title,
+  required String? description,
+  String? footerTitle,
+  String? footerDescription,
+  List<Color>? colors,
+}) {
+  return {
+    if (title != null) 'title': title,
+    if (description != null) 'description': description,
+    if (footerTitle != null) 'footerTitle': footerTitle,
+    if (footerDescription != null) 'footerDescription': footerDescription,
+    if (colors != null) 'colors': colorsToCssHex(colors),
   };
 }
 
@@ -577,20 +601,4 @@ String _dateOnly(DateTime value) {
   final month = value.month.toString().padLeft(2, '0');
   final day = value.day.toString().padLeft(2, '0');
   return '$year-$month-$day';
-}
-
-List<String> _colorsToCssHex(List<Color> colors) {
-  return colors.map(_colorToCssHex).toList();
-}
-
-String _colorToCssHex(Color color) {
-  // ignore: deprecated_member_use
-  final value = color.value;
-  final alpha = (value >> 24) & 0xff;
-  final red = (value >> 16) & 0xff;
-  final green = (value >> 8) & 0xff;
-  final blue = value & 0xff;
-  final channels =
-      alpha == 0xff ? [red, green, blue] : [red, green, blue, alpha];
-  return '#${channels.map((channel) => channel.toRadixString(16).padLeft(2, '0')).join()}';
 }

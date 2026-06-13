@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Restored separate bundled HTML assets per chart type after unified runtime loading
+  issues in WebView.
+
+## [0.2.0] - 2026-06-14
+
+### Added
+
+- Unified chart runtime asset (`chart-runtime.html`) shared by all chart types,
+  selected at load time via a `data-page` placeholder.
+
+### Changed
+
+- Replaced seven duplicate bundled HTML assets (~4.5 MB) with one unified runtime
+  (~750 KB).
+- Chart data updates now compare serialized payloads instead of object identity.
+- Consolidated color serialization helpers and card metadata JSON builders.
+- Removed web platform support from declared platforms and runtime code paths.
+- Package version bumped to 0.2.0.
+
+### Fixed
+
+- `ShadcnChartController.attach` now awaits pending script flush before load-stop
+  handlers run theme and data updates.
+- Auto-created controllers are detached when their `ShadcnChartView` disposes.
+
 ## [0.1.0] - 2026-06-14
 
 ### Added

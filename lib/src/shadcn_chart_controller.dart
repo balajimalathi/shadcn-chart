@@ -22,13 +22,19 @@ class ShadcnChartController {
   Future<void> evaluateJavascript(String source) => _evaluate(source);
 
   /// Binds this controller to a created WebView and flushes pending scripts.
-  void attach(InAppWebViewController controller) {
+  Future<void> attach(InAppWebViewController controller) async {
     _webViewController = controller;
     final scripts = List<String>.of(_pendingScripts);
     _pendingScripts.clear();
     for (final source in scripts) {
-      _webViewController!.evaluateJavascript(source: source);
+      await controller.evaluateJavascript(source: source);
     }
+  }
+
+  /// Clears the WebView binding when the view disposes an auto-created controller.
+  void detach() {
+    _webViewController = null;
+    _pendingScripts.clear();
   }
 
   Future<void> _evaluate(String source) async {

@@ -9,7 +9,7 @@ single-file HTML outputs copied to `../assets/charts/`.
 ## Structure
 
 ```text
-shadcn-chart-template/
+renderers/
   templates/              # Per-chart HTML shells used by Vite builds
   scripts/copy-assets.mjs # Copies dist HTML into the Flutter package assets
   src/components/charts/  # React chart implementations
@@ -69,18 +69,6 @@ Copy already-built files into `../assets/charts/`:
 npm run copy:assets
 ```
 
-## Chart outputs
-
-| Command | Output |
-| --- | --- |
-| `npm run build:area-interactive` | `dist/area-interactive/templates/area-interactive.html` |
-| `npm run build:bar-interactive` | `dist/bar-interactive/templates/bar-interactive.html` |
-| `npm run build:bar-multiple` | `dist/bar-multiple/templates/bar-multiple.html` |
-| `npm run build:line-interactive` | `dist/line-interactive/templates/line-interactive.html` |
-| `npm run build:pie-donut` | `dist/pie-donut/templates/pie-donut.html` |
-| `npm run build:pie-legend` | `dist/pie-legend/templates/pie-legend.html` |
-| `npm run build:radial-stacked` | `dist/radial-stacked/templates/radial-stacked.html` |
-
 ## Flutter bridge
 
 Each built renderer exposes:
@@ -88,9 +76,6 @@ Each built renderer exposes:
 - `window.updateChartData(json)` to replace chart data/options.
 - `window.setChartOptions(json)` as an alias for partial option updates.
 - `window.setHostTheme(json)` to apply Flutter Material theme colors as CSS variables.
-
-The Dart package owns the typed models and serializes them into the JSON shape
-consumed by these functions.
 
 ## Before publishing the Flutter package
 

@@ -51,7 +51,7 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
   }
 
   List<ChartSeries> get _trafficSeries => const [
-        ChartSeries(key: 'desktop', label: 'Desktop', color: Colors.teal),
+        ChartSeries(key: 'desktop', label: 'Desktop', color: Colors.purple),
         ChartSeries(key: 'mobile', label: 'Mobile', color: Colors.deepOrange),
       ];
 

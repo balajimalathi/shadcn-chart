@@ -1,6 +1,6 @@
 name: shadcn_chart
 description: Flutter widgets for rendering shadcn/ui Recharts charts through in-app WebViews.
-version: 0.1.0
+version: 0.2.0
 homepage: https://github.com/balajimalathi/shadcn-chart
 repository: https://github.com/balajimalathi/shadcn-chart
 issue_tracker: https://github.com/balajimalathi/shadcn-chart/issues
@@ -26,7 +26,6 @@ platforms:
   ios:
   macos:
   windows:
-  web:
 
 dependencies:
   flutter:

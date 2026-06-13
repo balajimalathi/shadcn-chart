@@ -4,7 +4,7 @@ Render shadcn/ui Recharts charts in Flutter with a typed Dart API and bundled
 HTML renderers. Charts load from package assets — no network access required at
 runtime.
 
-**Platforms:** Android, iOS, macOS, Windows, and Web (via
+**Platforms:** Android, iOS, macOS, and Windows (via
 [`flutter_inappwebview`](https://pub.dev/packages/flutter_inappwebview)).
 
 | Light theme | Dark theme |
@@ -244,14 +244,12 @@ absolute GitHub URLs so they render on both GitHub and pub.dev.
 
 This package uses [`flutter_inappwebview`](https://pub.dev/packages/flutter_inappwebview).
 Follow that package's platform setup before running on Android, iOS, macOS,
-Windows, or web.
+or Windows.
 
 Common requirements:
 
 - **Android:** ensure your app supports AndroidX and has a suitable `minSdk`.
 - **iOS/macOS:** enable embedded views as required by Flutter WebView usage.
-- **Web:** include the `flutter_inappwebview` web support files when required by
-  your app setup.
 - **Windows:** use a Flutter version supported by `flutter_inappwebview`.
 
 Chart HTML is loaded from bundled Flutter package assets and does not require
