@@ -12,8 +12,10 @@ topics:
   - data-visualization
 
 screenshots:
-  - description: Example app showing shadcn_chart charts on web
-    path: screenshots/preview.png
+  - description: Example app on Android, light theme
+    path: screenshots/light.png
+  - description: Example app on Android, dark theme
+    path: screenshots/dark.png
 
 environment:
   sdk: ">=3.5.0 <4.0.0"

@@ -7,7 +7,9 @@ runtime.
 **Platforms:** Android, iOS, macOS, Windows, and Web (via
 [`flutter_inappwebview`](https://pub.dev/packages/flutter_inappwebview)).
 
-![shadcn_chart example app on web](https://raw.githubusercontent.com/balajimalathi/shadcn-chart/main/screenshots/preview.png)
+| Light theme | Dark theme |
+| --- | --- |
+| ![Example app on Android, light theme](https://raw.githubusercontent.com/balajimalathi/shadcn-chart/main/screenshots/light.png) | ![Example app on Android, dark theme](https://raw.githubusercontent.com/balajimalathi/shadcn-chart/main/screenshots/dark.png) |
 
 See the full example in [`example/lib/main.dart`](example/lib/main.dart).
 
@@ -235,7 +237,8 @@ colors, pass `Color` values on individual series/segments, or pass a chart-level
 
 ## Screenshots
 
-More platform screenshots will be added after the first pub.dev release.
+Light and dark theme previews are shown at the top of this README. Images use
+absolute GitHub URLs so they render on both GitHub and pub.dev.
 
 ## Platform setup
 
