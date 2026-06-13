@@ -1,0 +1,25 @@
+name: Pana
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+jobs:
+  pana:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install pana
+        run: dart pub global activate pana
+
+      - name: Run pana
+        run: dart pub global run pana --no-warning --exit-code-threshold 160 .
+        env:
+          PUB_HOSTED_URL: https://pub.dev

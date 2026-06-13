@@ -34,6 +34,7 @@ enum ShadcnChartTheme {
   system,
 }
 
+/// Asset path helpers for [ShadcnChartType].
 extension ShadcnChartTypeAsset on ShadcnChartType {
   /// The bundled HTML asset used by this chart type.
   String get assetPath {
@@ -52,6 +53,7 @@ extension ShadcnChartTypeAsset on ShadcnChartType {
   String get packageAssetKey => 'packages/shadcn_chart/$assetPath';
 }
 
+/// JSON theme values for [ShadcnChartTheme].
 extension ShadcnChartThemeValue on ShadcnChartTheme {
   /// JSON value expected by the bundled chart runtime.
   String get value => name;
@@ -75,6 +77,7 @@ class ChartSeries {
   /// Optional CSS color, for example `#0f766e` or `hsl(173 58% 39%)`.
   final String? color;
 
+  /// Serializes this series to the JSON shape expected by the renderer.
   Map<String, Object?> toJson() => {
         'key': key,
         'label': label,
@@ -96,6 +99,7 @@ class TimeSeriesPoint {
   /// Numeric values keyed by [ChartSeries.key].
   final Map<String, num> values;
 
+  /// Serializes this point to a JSON map keyed by [date] and series keys.
   Map<String, Object?> toJson() => {
         'date': _dateOnly(date),
         ...values,
@@ -116,6 +120,7 @@ class CategorySeriesPoint {
   /// Numeric values keyed by [ChartSeries.key].
   final Map<String, num> values;
 
+  /// Serializes this category point to a JSON map.
   Map<String, Object?> toJson() => {
         'category': category,
         ...values,
@@ -140,6 +145,7 @@ class TimeRangeOption {
   /// Number of days to show from the reference date.
   final int days;
 
+  /// Serializes this time range option for the area chart selector.
   Map<String, Object?> toJson() => {
         'value': value,
         'label': label,
