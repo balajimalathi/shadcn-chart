@@ -2,12 +2,50 @@ import { describe, expect, it } from "vitest"
 import {
   createChartBridge,
   mergeChartPayload,
+  parseEncodedBridgePayload,
   parseBridgePayload,
 } from "./flutter-bridge-core"
 
 describe("parseBridgePayload", () => {
   it("parses JSON strings", () => {
     expect(parseBridgePayload('{"title":"Visitors trend"}')).toEqual({
+      title: "Visitors trend",
+    })
+  })
+})
+
+describe("parseEncodedBridgePayload", () => {
+  it("parses base64-encoded JSON", () => {
+    const encodedPayload = btoa(
+      JSON.stringify({
+        title: "Visitors trend",
+        description: "Interactive line chart",
+      }),
+    )
+
+    expect(parseEncodedBridgePayload(encodedPayload)).toEqual({
+      title: "Visitors trend",
+      description: "Interactive line chart",
+    })
+  })
+
+  it("parses URL-safe base64 JSON without padding", () => {
+    const encodedPayload = btoa(JSON.stringify({ title: "Visitors trend" }))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "")
+
+    expect(parseEncodedBridgePayload(encodedPayload)).toEqual({
+      title: "Visitors trend",
+    })
+  })
+
+  it("parses percent-encoded JSON", () => {
+    const encodedPayload = encodeURIComponent(
+      JSON.stringify({ title: "Visitors trend" }),
+    )
+
+    expect(parseEncodedBridgePayload(encodedPayload)).toEqual({
       title: "Visitors trend",
     })
   })

@@ -34,12 +34,8 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
           icon: const Icon(Icons.refresh),
           label: const Text('Refresh data'),
         ),
-        body: GridView.count(
-          crossAxisCount: 2,
-          childAspectRatio: 1,
+        body: ListView(
           padding: const EdgeInsets.all(16),
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
           children: [
             _ChartPanel(title: 'Interactive bar', data: _interactiveBar()),
             _ChartPanel(title: 'Multiple bar', data: _multipleBar()),

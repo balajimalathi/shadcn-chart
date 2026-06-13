@@ -30,6 +30,33 @@ export function parseBridgePayload<T>(newData: string | Partial<T>): Partial<T> 
   return newData
 }
 
+export function parseEncodedBridgePayload(
+  encodedPayload: string | null,
+): Record<string, unknown> | null {
+  if (!encodedPayload) {
+    return null
+  }
+
+  try {
+    const base64 = encodedPayload
+      .replace(/-/g, "+")
+      .replace(/_/g, "/")
+      .padEnd(Math.ceil(encodedPayload.length / 4) * 4, "=")
+    const bytes = Uint8Array.from(atob(base64), (char) => char.charCodeAt(0))
+    const json = new TextDecoder().decode(bytes)
+    return JSON.parse(json) as Record<string, unknown>
+  } catch {
+    try {
+      return JSON.parse(decodeURIComponent(encodedPayload)) as Record<
+        string,
+        unknown
+      >
+    } catch {
+      return null
+    }
+  }
+}
+
 export type PayloadListener = (data: Record<string, unknown>) => void
 
 export function createChartBridge() {

@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react"
 import type { BaseChartPayload } from "@/types/chart-data"
-import { createChartBridge, mergeChartPayload } from "./flutter-bridge-core"
+import {
+  createChartBridge,
+  mergeChartPayload,
+  parseEncodedBridgePayload,
+} from "./flutter-bridge-core"
 
 type HostThemePayload = Record<string, string>
 
@@ -134,7 +138,17 @@ type EarlyBridgeWindow = Window & {
 const chartBridge = createChartBridge()
 let pendingTheme: HostThemePayload | null = null
 
+function initialPayloadFromLocation() {
+  const params = new URLSearchParams(window.location.hash.replace(/^#/, ""))
+  return parseEncodedBridgePayload(params.get("payload"))
+}
+
 function drainEarlyBridgeCalls() {
+  const initialPayload = initialPayloadFromLocation()
+  if (initialPayload) {
+    chartBridge.applyPayload(initialPayload)
+  }
+
   const earlyWindow = window as EarlyBridgeWindow
   const earlyPayloads = earlyWindow.__chartBridgeEarlyPayloads ?? []
   delete earlyWindow.__chartBridgeEarlyPayloads

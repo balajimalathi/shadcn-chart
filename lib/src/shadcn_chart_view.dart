@@ -132,9 +132,7 @@ class _ShadcnChartViewState extends State<ShadcnChartView> {
             ),
       initialUrlRequest: kIsWeb
           ? URLRequest(
-              url: WebUri.uri(
-                Uri.base.resolve('assets/${widget.data.type.packageAssetKey}'),
-              ),
+              url: WebUri.uri(_webChartAssetUri(widget.data)),
             )
           : null,
       initialSettings: widget.settings ?? _defaultSettings(),
@@ -169,6 +167,13 @@ class _ShadcnChartViewState extends State<ShadcnChartView> {
 
   Future<String> _loadChartHtml() {
     return rootBundle.loadString(widget.data.type.packageAssetKey);
+  }
+
+  Uri _webChartAssetUri(ShadcnChartData data) {
+    final payload = base64Url.encode(utf8.encode(jsonEncode(data.toJson())));
+    return Uri.base
+        .resolve('assets/${data.type.packageAssetKey}')
+        .replace(fragment: 'payload=$payload');
   }
 
   Future<void> _applyInitialChartData() async {
