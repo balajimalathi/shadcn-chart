@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/chart"
 import { useFlutterChart } from "@/lib/flutter-bridge"
 import { chartConfigWithValue, PieChartPayload } from "@/types/chart-data"
-import { useTheme } from "../theme-provider"
 
 const defaultPayload: PieChartPayload = {
   title: "Pie Chart - Donut",
@@ -45,12 +44,12 @@ const defaultPayload: PieChartPayload = {
 }
 
 export default function PieDonut() {
-  const { setTheme } = useTheme()
-  const payload = useFlutterChart(defaultPayload, setTheme)
+  const payload = useFlutterChart(defaultPayload)
   const chartConfig = chartConfigWithValue(
     payload.valueKey,
     "Value",
     payload.segments,
+    payload.colors,
   ) as ChartConfig
   const chartData = payload.data.map((item) => ({
     ...item,
@@ -59,12 +58,14 @@ export default function PieDonut() {
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>{payload.title}</CardTitle>
-        {payload.description ? (
-          <CardDescription>{payload.description}</CardDescription>
-        ) : null}
-      </CardHeader>
+      {payload.title || payload.description ? (
+        <CardHeader className="items-center pb-0">
+          {payload.title ? <CardTitle>{payload.title}</CardTitle> : null}
+          {payload.description ? (
+            <CardDescription>{payload.description}</CardDescription>
+          ) : null}
+        </CardHeader>
+      ) : null}
       <CardContent className="flex min-h-0 flex-1 pb-0">
         <ChartContainer config={chartConfig}>
           <PieChart>

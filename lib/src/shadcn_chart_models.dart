@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Chart renderers bundled with this package.
 enum ShadcnChartType {
   /// Interactive area chart with a time-range selector.
@@ -22,18 +24,6 @@ enum ShadcnChartType {
   radialStacked,
 }
 
-/// Supported chart themes passed to the embedded renderer.
-enum ShadcnChartTheme {
-  /// Light color scheme.
-  light,
-
-  /// Dark color scheme.
-  dark,
-
-  /// Follow the host system preference.
-  system,
-}
-
 /// Asset path helpers for [ShadcnChartType].
 extension ShadcnChartTypeAsset on ShadcnChartType {
   /// The bundled HTML asset used by this chart type.
@@ -53,12 +43,6 @@ extension ShadcnChartTypeAsset on ShadcnChartType {
   String get packageAssetKey => 'packages/shadcn_chart/$assetPath';
 }
 
-/// JSON theme values for [ShadcnChartTheme].
-extension ShadcnChartThemeValue on ShadcnChartTheme {
-  /// JSON value expected by the bundled chart runtime.
-  String get value => name;
-}
-
 /// Series metadata shared by cartesian and radial charts.
 class ChartSeries {
   /// Creates a chart series.
@@ -74,14 +58,14 @@ class ChartSeries {
   /// Human-readable label shown in legends and tooltips.
   final String label;
 
-  /// Optional CSS color, for example `#0f766e` or `hsl(173 58% 39%)`.
-  final String? color;
+  /// Optional Flutter color for this series.
+  final Color? color;
 
   /// Serializes this series to the JSON shape expected by the renderer.
   Map<String, Object?> toJson() => {
         'key': key,
         'label': label,
-        if (color != null) 'color': color,
+        if (color != null) 'color': _colorToCssHex(color!),
       };
 }
 
@@ -172,13 +156,13 @@ class PieChartSegment {
   /// Numeric segment value.
   final num value;
 
-  /// Optional CSS color.
-  final String? color;
+  /// Optional Flutter color for this segment.
+  final Color? color;
 
   Map<String, Object?> get _seriesJson => {
         'key': key,
         'label': label,
-        if (color != null) 'color': color,
+        if (color != null) 'color': _colorToCssHex(color!),
       };
 
   Map<String, Object?> get _datumJson => {
@@ -205,11 +189,11 @@ class InteractiveBarChartData extends ShadcnChartData {
   const InteractiveBarChartData({
     required this.data,
     required this.series,
-    this.title = 'Bar Chart - Interactive',
+    this.title,
     this.description,
     this.valueLabel = 'Page Views',
     this.activeSeriesKey,
-    this.theme,
+    this.colors,
   });
 
   /// Time-ordered points rendered on the date axis.
@@ -219,7 +203,7 @@ class InteractiveBarChartData extends ShadcnChartData {
   final List<ChartSeries> series;
 
   /// Card title shown above the chart.
-  final String title;
+  final String? title;
 
   /// Optional subtitle shown below the title.
   final String? description;
@@ -230,8 +214,8 @@ class InteractiveBarChartData extends ShadcnChartData {
   /// Initially highlighted series key, if any.
   final String? activeSeriesKey;
 
-  /// Embedded chart theme override.
-  final ShadcnChartTheme? theme;
+  /// Optional fallback colors used by series without their own color.
+  final List<Color>? colors;
 
   @override
   ShadcnChartType get type => ShadcnChartType.barInteractive;
@@ -244,7 +228,7 @@ class InteractiveBarChartData extends ShadcnChartData {
         data: data,
         series: series,
         activeSeriesKey: activeSeriesKey,
-        theme: theme,
+        colors: colors,
       );
 }
 
@@ -254,11 +238,11 @@ class InteractiveLineChartData extends ShadcnChartData {
   const InteractiveLineChartData({
     required this.data,
     required this.series,
-    this.title = 'Line Chart - Interactive',
+    this.title,
     this.description,
     this.valueLabel = 'Page Views',
     this.activeSeriesKey,
-    this.theme,
+    this.colors,
   });
 
   /// Time-ordered points rendered on the date axis.
@@ -268,7 +252,7 @@ class InteractiveLineChartData extends ShadcnChartData {
   final List<ChartSeries> series;
 
   /// Card title shown above the chart.
-  final String title;
+  final String? title;
 
   /// Optional subtitle shown below the title.
   final String? description;
@@ -279,8 +263,8 @@ class InteractiveLineChartData extends ShadcnChartData {
   /// Initially highlighted series key, if any.
   final String? activeSeriesKey;
 
-  /// Embedded chart theme override.
-  final ShadcnChartTheme? theme;
+  /// Optional fallback colors used by series without their own color.
+  final List<Color>? colors;
 
   @override
   ShadcnChartType get type => ShadcnChartType.lineInteractive;
@@ -293,7 +277,7 @@ class InteractiveLineChartData extends ShadcnChartData {
         data: data,
         series: series,
         activeSeriesKey: activeSeriesKey,
-        theme: theme,
+        colors: colors,
       );
 }
 
@@ -303,7 +287,7 @@ class AreaChartData extends ShadcnChartData {
   const AreaChartData({
     required this.data,
     required this.series,
-    this.title = 'Area Chart - Interactive',
+    this.title,
     this.description,
     this.valueLabel = 'Visitors',
     this.timeRanges = const [
@@ -313,7 +297,7 @@ class AreaChartData extends ShadcnChartData {
     ],
     this.defaultTimeRange = '90d',
     this.referenceDate,
-    this.theme,
+    this.colors,
   });
 
   /// Time-ordered points rendered on the date axis.
@@ -323,7 +307,7 @@ class AreaChartData extends ShadcnChartData {
   final List<ChartSeries> series;
 
   /// Card title shown above the chart.
-  final String title;
+  final String? title;
 
   /// Optional subtitle shown below the title.
   final String? description;
@@ -340,8 +324,8 @@ class AreaChartData extends ShadcnChartData {
   /// End date used when filtering points by the selected range.
   final DateTime? referenceDate;
 
-  /// Embedded chart theme override.
-  final ShadcnChartTheme? theme;
+  /// Optional fallback colors used by series without their own color.
+  final List<Color>? colors;
 
   @override
   ShadcnChartType get type => ShadcnChartType.areaInteractive;
@@ -354,7 +338,7 @@ class AreaChartData extends ShadcnChartData {
           valueLabel: valueLabel,
           data: data,
           series: series,
-          theme: theme,
+          colors: colors,
         ),
         'timeRanges': timeRanges.map((item) => item.toJson()).toList(),
         if (defaultTimeRange != null) 'defaultTimeRange': defaultTimeRange,
@@ -368,11 +352,11 @@ class MultipleBarChartData extends ShadcnChartData {
   const MultipleBarChartData({
     required this.data,
     required this.series,
-    this.title = 'Bar Chart - Multiple',
+    this.title,
     this.description,
     this.footerTitle,
     this.footerDescription,
-    this.theme,
+    this.colors,
   });
 
   /// Category points rendered on the x-axis.
@@ -382,7 +366,7 @@ class MultipleBarChartData extends ShadcnChartData {
   final List<ChartSeries> series;
 
   /// Card title shown above the chart.
-  final String title;
+  final String? title;
 
   /// Optional subtitle shown below the title.
   final String? description;
@@ -393,19 +377,19 @@ class MultipleBarChartData extends ShadcnChartData {
   /// Optional footer body text below the chart.
   final String? footerDescription;
 
-  /// Embedded chart theme override.
-  final ShadcnChartTheme? theme;
+  /// Optional fallback colors used by series without their own color.
+  final List<Color>? colors;
 
   @override
   ShadcnChartType get type => ShadcnChartType.barMultiple;
 
   @override
   Map<String, Object?> toJson() => {
-        'title': title,
+        if (title != null) 'title': title,
         if (description != null) 'description': description,
         if (footerTitle != null) 'footerTitle': footerTitle,
         if (footerDescription != null) 'footerDescription': footerDescription,
-        if (theme != null) 'theme': theme!.value,
+        if (colors != null) 'colors': _colorsToCssHex(colors!),
         'xKey': 'category',
         'xType': 'category',
         'series': series.map((item) => item.toJson()).toList(),
@@ -418,18 +402,18 @@ class PieDonutChartData extends ShadcnChartData {
   /// Creates donut pie chart data.
   const PieDonutChartData({
     required this.segments,
-    this.title = 'Pie Chart - Donut',
+    this.title,
     this.description,
     this.footerTitle,
     this.footerDescription,
-    this.theme,
+    this.colors,
   });
 
   /// Slice definitions and values for the chart.
   final List<PieChartSegment> segments;
 
   /// Card title shown above the chart.
-  final String title;
+  final String? title;
 
   /// Optional subtitle shown below the title.
   final String? description;
@@ -440,8 +424,8 @@ class PieDonutChartData extends ShadcnChartData {
   /// Optional footer body text below the chart.
   final String? footerDescription;
 
-  /// Embedded chart theme override.
-  final ShadcnChartTheme? theme;
+  /// Optional fallback colors used by segments without their own color.
+  final List<Color>? colors;
 
   @override
   ShadcnChartType get type => ShadcnChartType.pieDonut;
@@ -453,7 +437,7 @@ class PieDonutChartData extends ShadcnChartData {
         footerTitle: footerTitle,
         footerDescription: footerDescription,
         segments: segments,
-        theme: theme,
+        colors: colors,
       );
 }
 
@@ -462,22 +446,22 @@ class PieLegendChartData extends ShadcnChartData {
   /// Creates legend pie chart data.
   const PieLegendChartData({
     required this.segments,
-    this.title = 'Pie Chart - Legend',
+    this.title,
     this.description,
-    this.theme,
+    this.colors,
   });
 
   /// Slice definitions and values for the chart.
   final List<PieChartSegment> segments;
 
   /// Card title shown above the chart.
-  final String title;
+  final String? title;
 
   /// Optional subtitle shown below the title.
   final String? description;
 
-  /// Embedded chart theme override.
-  final ShadcnChartTheme? theme;
+  /// Optional fallback colors used by segments without their own color.
+  final List<Color>? colors;
 
   @override
   ShadcnChartType get type => ShadcnChartType.pieLegend;
@@ -487,7 +471,7 @@ class PieLegendChartData extends ShadcnChartData {
         title: title,
         description: description,
         segments: segments,
-        theme: theme,
+        colors: colors,
       );
 }
 
@@ -497,12 +481,12 @@ class RadialStackedChartData extends ShadcnChartData {
   const RadialStackedChartData({
     required this.values,
     required this.series,
-    this.title = 'Radial Chart - Stacked',
+    this.title,
     this.description,
     this.centerLabel = 'Total',
     this.footerTitle,
     this.footerDescription,
-    this.theme,
+    this.colors,
   });
 
   /// Numeric values keyed by [ChartSeries.key].
@@ -512,7 +496,7 @@ class RadialStackedChartData extends ShadcnChartData {
   final List<ChartSeries> series;
 
   /// Card title shown above the chart.
-  final String title;
+  final String? title;
 
   /// Optional subtitle shown below the title.
   final String? description;
@@ -526,19 +510,19 @@ class RadialStackedChartData extends ShadcnChartData {
   /// Optional footer body text below the chart.
   final String? footerDescription;
 
-  /// Embedded chart theme override.
-  final ShadcnChartTheme? theme;
+  /// Optional fallback colors used by series without their own color.
+  final List<Color>? colors;
 
   @override
   ShadcnChartType get type => ShadcnChartType.radialStacked;
 
   @override
   Map<String, Object?> toJson() => {
-        'title': title,
+        if (title != null) 'title': title,
         if (description != null) 'description': description,
         if (footerTitle != null) 'footerTitle': footerTitle,
         if (footerDescription != null) 'footerDescription': footerDescription,
-        if (theme != null) 'theme': theme!.value,
+        if (colors != null) 'colors': _colorsToCssHex(colors!),
         'centerLabel': centerLabel,
         'series': series.map((item) => item.toJson()).toList(),
         'data': [values],
@@ -546,18 +530,18 @@ class RadialStackedChartData extends ShadcnChartData {
 }
 
 Map<String, Object?> _cartesianTimeJson({
-  required String title,
+  required String? title,
   required String? description,
   required String valueLabel,
   required List<TimeSeriesPoint> data,
   required List<ChartSeries> series,
   String? activeSeriesKey,
-  ShadcnChartTheme? theme,
+  List<Color>? colors,
 }) {
   return {
-    'title': title,
+    if (title != null) 'title': title,
     if (description != null) 'description': description,
-    if (theme != null) 'theme': theme.value,
+    if (colors != null) 'colors': _colorsToCssHex(colors),
     'valueLabel': valueLabel,
     'xKey': 'date',
     'xType': 'date',
@@ -568,19 +552,19 @@ Map<String, Object?> _cartesianTimeJson({
 }
 
 Map<String, Object?> _pieJson({
-  required String title,
+  required String? title,
   required String? description,
   required List<PieChartSegment> segments,
   String? footerTitle,
   String? footerDescription,
-  ShadcnChartTheme? theme,
+  List<Color>? colors,
 }) {
   return {
-    'title': title,
+    if (title != null) 'title': title,
     if (description != null) 'description': description,
     if (footerTitle != null) 'footerTitle': footerTitle,
     if (footerDescription != null) 'footerDescription': footerDescription,
-    if (theme != null) 'theme': theme.value,
+    if (colors != null) 'colors': _colorsToCssHex(colors),
     'nameKey': 'name',
     'valueKey': 'value',
     'segments': segments.map((item) => item._seriesJson).toList(),
@@ -593,4 +577,20 @@ String _dateOnly(DateTime value) {
   final month = value.month.toString().padLeft(2, '0');
   final day = value.day.toString().padLeft(2, '0');
   return '$year-$month-$day';
+}
+
+List<String> _colorsToCssHex(List<Color> colors) {
+  return colors.map(_colorToCssHex).toList();
+}
+
+String _colorToCssHex(Color color) {
+  // ignore: deprecated_member_use
+  final value = color.value;
+  final alpha = (value >> 24) & 0xff;
+  final red = (value >> 16) & 0xff;
+  final green = (value >> 8) & 0xff;
+  final blue = value & 0xff;
+  final channels =
+      alpha == 0xff ? [red, green, blue] : [red, green, blue, alpha];
+  return '#${channels.map((channel) => channel.toRadixString(16).padLeft(2, '0')).join()}';
 }

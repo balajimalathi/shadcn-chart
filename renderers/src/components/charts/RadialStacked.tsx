@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/chart"
 import { useFlutterChart } from "@/lib/flutter-bridge"
 import { chartConfigFromSeries, RadialChartPayload } from "@/types/chart-data"
-import { useTheme } from "../theme-provider"
 
 const defaultPayload: RadialChartPayload = {
   title: "Radial Chart - Stacked",
@@ -35,9 +34,11 @@ const defaultPayload: RadialChartPayload = {
 }
 
 export default function RadialStacked() {
-  const { setTheme } = useTheme()
-  const payload = useFlutterChart(defaultPayload, setTheme)
-  const chartConfig = chartConfigFromSeries(payload.series) as ChartConfig
+  const payload = useFlutterChart(defaultPayload)
+  const chartConfig = chartConfigFromSeries(
+    payload.series,
+    payload.colors,
+  ) as ChartConfig
   const row = payload.data[0] ?? {}
   const total = payload.series.reduce(
     (acc, series) => acc + Number(row[series.key] ?? 0),
@@ -46,12 +47,14 @@ export default function RadialStacked() {
 
   return (
     <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>{payload.title}</CardTitle>
-        {payload.description ? (
-          <CardDescription>{payload.description}</CardDescription>
-        ) : null}
-      </CardHeader>
+      {payload.title || payload.description ? (
+        <CardHeader className="items-center pb-0">
+          {payload.title ? <CardTitle>{payload.title}</CardTitle> : null}
+          {payload.description ? (
+            <CardDescription>{payload.description}</CardDescription>
+          ) : null}
+        </CardHeader>
+      ) : null}
       <CardContent className="flex min-h-0 flex-1 items-center pb-0">
         <ChartContainer config={chartConfig}>
           <RadialBarChart data={[row]} endAngle={180} innerRadius="55%" outerRadius="90%">

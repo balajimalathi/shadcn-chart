@@ -22,7 +22,6 @@ import {
   CartesianChartPayload,
   chartConfigFromSeries,
 } from "@/types/chart-data"
-import { useTheme } from "../theme-provider"
 
 const defaultPayload: CartesianChartPayload = {
   title: "Bar Chart - Multiple",
@@ -46,18 +45,22 @@ const defaultPayload: CartesianChartPayload = {
 }
 
 export default function BarMultiple() {
-  const { setTheme } = useTheme()
-  const payload = useFlutterChart(defaultPayload, setTheme)
-  const chartConfig = chartConfigFromSeries(payload.series) as ChartConfig
+  const payload = useFlutterChart(defaultPayload)
+  const chartConfig = chartConfigFromSeries(
+    payload.series,
+    payload.colors,
+  ) as ChartConfig
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>{payload.title}</CardTitle>
-        {payload.description ? (
-          <CardDescription>{payload.description}</CardDescription>
-        ) : null}
-      </CardHeader>
+      {payload.title || payload.description ? (
+        <CardHeader>
+          {payload.title ? <CardTitle>{payload.title}</CardTitle> : null}
+          {payload.description ? (
+            <CardDescription>{payload.description}</CardDescription>
+          ) : null}
+        </CardHeader>
+      ) : null}
       <CardContent className="pb-0">
         <ChartContainer config={chartConfig}>
           <BarChart accessibilityLayer data={payload.data}>

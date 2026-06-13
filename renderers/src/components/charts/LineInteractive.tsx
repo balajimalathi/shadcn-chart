@@ -21,7 +21,6 @@ import {
   CartesianChartPayload,
   chartConfigWithValue,
 } from "@/types/chart-data"
-import { useTheme } from "../theme-provider"
 
 const defaultPayload: CartesianChartPayload = {
   title: "Line Chart - Interactive",
@@ -45,8 +44,7 @@ const defaultPayload: CartesianChartPayload = {
 }
 
 export default function LineInteractive() {
-  const { setTheme } = useTheme()
-  const payload = useFlutterChart(defaultPayload, setTheme)
+  const payload = useFlutterChart(defaultPayload)
   const firstSeries = payload.series[0]?.key ?? ""
   const [selectedSeries, setSelectedSeries] = React.useState(
     payload.activeSeries ?? firstSeries,
@@ -58,6 +56,7 @@ export default function LineInteractive() {
     "views",
     payload.valueLabel ?? "Value",
     payload.series,
+    payload.colors,
   ) as ChartConfig
 
   React.useEffect(() => {
@@ -78,12 +77,14 @@ export default function LineInteractive() {
   return (
     <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-3 sm:py-4">
-          <CardTitle>{payload.title}</CardTitle>
-          {payload.description ? (
-            <CardDescription>{payload.description}</CardDescription>
-          ) : null}
-        </div>
+        {payload.title || payload.description ? (
+          <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-3 sm:py-4">
+            {payload.title ? <CardTitle>{payload.title}</CardTitle> : null}
+            {payload.description ? (
+              <CardDescription>{payload.description}</CardDescription>
+            ) : null}
+          </div>
+        ) : null}
         <div className="flex">
           {payload.series.map((series) => (
             <button

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,7 +50,8 @@ class ShadcnChartView extends StatefulWidget {
   final void Function(InAppWebViewController controller)? onWebViewCreated;
 
   /// Called when the chart HTML finishes loading and initial data is applied.
-  final void Function(InAppWebViewController controller, WebUri? url)? onLoadStop;
+  final void Function(InAppWebViewController controller, WebUri? url)?
+      onLoadStop;
 
   /// Called when the WebView fails to load a chart resource.
   final void Function(
@@ -67,6 +70,8 @@ class ShadcnChartView extends StatefulWidget {
 class _ShadcnChartViewState extends State<ShadcnChartView> {
   late final ShadcnChartController _controller;
   late Future<String> _htmlFuture;
+  bool _hasLoaded = false;
+  String? _lastHostThemeJson;
 
   @override
   void initState() {
@@ -79,9 +84,18 @@ class _ShadcnChartViewState extends State<ShadcnChartView> {
   void didUpdateWidget(covariant ShadcnChartView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.data.type != widget.data.type) {
+      _hasLoaded = false;
       _htmlFuture = kIsWeb ? Future<String>.value('') : _loadChartHtml();
     } else if (oldWidget.data != widget.data) {
       _controller.updateData(widget.data);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_hasLoaded) {
+      _syncHostTheme();
     }
   }
 
@@ -118,9 +132,7 @@ class _ShadcnChartViewState extends State<ShadcnChartView> {
             ),
       initialUrlRequest: kIsWeb
           ? URLRequest(
-              url: WebUri.uri(
-                Uri.base.resolve('assets/${widget.data.type.packageAssetKey}'),
-              ),
+              url: WebUri.uri(_webChartAssetUri(widget.data)),
             )
           : null,
       initialSettings: widget.settings ?? _defaultSettings(),
@@ -129,7 +141,9 @@ class _ShadcnChartViewState extends State<ShadcnChartView> {
         widget.onWebViewCreated?.call(controller);
       },
       onLoadStop: (controller, url) async {
-        await _controller.updateData(widget.data);
+        _hasLoaded = true;
+        await _syncHostTheme(force: true);
+        await _applyInitialChartData();
         widget.onLoadStop?.call(controller, url);
       },
       onReceivedError: widget.onReceivedError,
@@ -154,4 +168,86 @@ class _ShadcnChartViewState extends State<ShadcnChartView> {
   Future<String> _loadChartHtml() {
     return rootBundle.loadString(widget.data.type.packageAssetKey);
   }
+
+  Uri _webChartAssetUri(ShadcnChartData data) {
+    final payload = base64Url.encode(utf8.encode(jsonEncode(data.toJson())));
+    return Uri.base
+        .resolve('assets/${data.type.packageAssetKey}')
+        .replace(fragment: 'payload=$payload');
+  }
+
+  Future<void> _applyInitialChartData() async {
+    await _controller.updateData(widget.data);
+    if (!kIsWeb) {
+      return;
+    }
+
+    // Web iframes can finish navigation before the chart bundle installs
+    // window.updateChartData; retry so the first Dart payload is not lost.
+    for (final delayMs in const [50, 150, 400]) {
+      await Future<void>.delayed(Duration(milliseconds: delayMs));
+      if (!mounted) {
+        return;
+      }
+      await _controller.updateData(widget.data);
+    }
+  }
+
+  Future<void> _syncHostTheme({bool force = false}) async {
+    final hostThemeJson = jsonEncode(_hostThemePayload(context));
+    if (!force && hostThemeJson == _lastHostThemeJson) {
+      return;
+    }
+
+    _lastHostThemeJson = hostThemeJson;
+    await _controller.evaluateJavascript(
+      'window.setHostTheme($hostThemeJson);',
+    );
+  }
+}
+
+Map<String, String> _hostThemePayload(BuildContext context) {
+  final theme = Theme.of(context);
+  final colorScheme = theme.colorScheme;
+  final textColor = theme.textTheme.bodyMedium?.color ?? colorScheme.onSurface;
+  final cardColor = theme.cardTheme.color ?? colorScheme.surfaceContainerLow;
+
+  return {
+    'brightness': theme.brightness.name,
+    'background': _colorToCssHex(colorScheme.surface),
+    'foreground': _colorToCssHex(textColor),
+    'card': _colorToCssHex(cardColor),
+    'cardForeground': _colorToCssHex(colorScheme.onSurface),
+    'popover': _colorToCssHex(colorScheme.surfaceContainerHighest),
+    'popoverForeground': _colorToCssHex(colorScheme.onSurface),
+    'primary': _colorToCssHex(colorScheme.primary),
+    'primaryForeground': _colorToCssHex(colorScheme.onPrimary),
+    'secondary': _colorToCssHex(colorScheme.secondaryContainer),
+    'secondaryForeground': _colorToCssHex(colorScheme.onSecondaryContainer),
+    'muted': _colorToCssHex(colorScheme.surfaceContainerHighest),
+    'mutedForeground': _colorToCssHex(colorScheme.onSurfaceVariant),
+    'accent': _colorToCssHex(colorScheme.tertiaryContainer),
+    'accentForeground': _colorToCssHex(colorScheme.onTertiaryContainer),
+    'destructive': _colorToCssHex(colorScheme.error),
+    'border': _colorToCssHex(colorScheme.outlineVariant),
+    'input': _colorToCssHex(colorScheme.outlineVariant),
+    'ring': _colorToCssHex(colorScheme.primary),
+    'chart1': _colorToCssHex(colorScheme.primary),
+    'chart2': _colorToCssHex(colorScheme.tertiary),
+    'chart3': _colorToCssHex(colorScheme.secondary),
+    'chart4': _colorToCssHex(colorScheme.error),
+    'chart5': _colorToCssHex(colorScheme.primaryContainer),
+  };
+}
+
+String _colorToCssHex(Color color) {
+  // ignore: deprecated_member_use
+  final value = color.value;
+  final alpha = (value >> 24) & 0xff;
+  final red = (value >> 16) & 0xff;
+  final green = (value >> 8) & 0xff;
+  final blue = value & 0xff;
+  final channels =
+      alpha == 0xff ? [red, green, blue] : [red, green, blue, alpha];
+  return '#${channels.map((channel) => channel.toRadixString(16).padLeft(2, '0')).join()}';
 }
