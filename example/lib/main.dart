@@ -55,7 +55,7 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
         ),
         body: GridView.count(
           crossAxisCount: 3,
-          childAspectRatio: 1.8,
+          childAspectRatio: 1.25,
           padding: const EdgeInsets.all(16),
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,

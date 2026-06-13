@@ -7,6 +7,8 @@ runtime.
 **Platforms:** Android, iOS, macOS, Windows, and Web (via
 [`flutter_inappwebview`](https://pub.dev/packages/flutter_inappwebview)).
 
+![shadcn_chart example app on web](screenshots/preview.png)
+
 See the full example in [`example/lib/main.dart`](example/lib/main.dart).
 
 ## Installation
@@ -225,10 +227,6 @@ embedded renderer.
 
 ## Screenshots
 
-Example app running on web:
-
-![shadcn_chart example app on web](screenshots/preview.png)
-
 More platform screenshots will be added after the first pub.dev release.
 
 ## Platform setup
@@ -283,12 +281,45 @@ third-party license text.
 
 ## Maintaining chart assets
 
-The React/Vite source for the renderers lives in `shadcn-chart-template/`.
+The React/Vite source for the renderers lives in `renderers/`.
 After changing templates, rebuild the single-file HTML outputs and copy them to
 `assets/charts/` before publishing:
 
 ```bash
-cd shadcn-chart-template
+cd renderers
 npm install
 npm run build:package-assets
 ```
+
+## Pub health score
+
+Run [pana](https://pub.dev/packages/pana) on **Linux or CI** for an accurate
+pub.dev score. On Windows, local runs may report false failures:
+
+- **dartdoc crash** (`RangeError` in `_stripDocImports`): known dartdoc 9.0.2+
+  bug with Windows CRLF Flutter SDK offsets
+  ([dart-lang/dartdoc#4180](https://github.com/dart-lang/dartdoc/issues/4180)).
+  Workaround: `dart pub global run pana --dartdoc-version 9.0.0 .`
+- **Screenshot tools missing** (`webpinfo`, `cwebp`): install
+  [Google libwebp](https://developers.google.com/speed/webp/download) and add
+  its `bin` folder to `PATH`, or rely on CI / `flutter pub publish` (pub.dev
+  provides these tools).
+
+This package declares support for Android, iOS, macOS, Windows, and Web only
+(see `platforms` in `pubspec.yaml`).
+
+## Contributing
+
+Contributions, feedback, and bug reports are welcome.
+
+- **Issues:** [Open an issue](https://github.com/balajimalathi/shadcn-chart/issues) if something breaks, a chart misbehaves, or you have a feature idea.
+- **Pull requests:** PRs are appreciated for fixes and improvements.
+- **Support:** I'm happy to look into reported issues and ship fixes.
+
+## Sponsor
+
+If this package helps your project, consider sponsoring ongoing maintenance:
+
+<iframe src="https://github.com/sponsors/balajimalathi/button" title="Sponsor balajimalathi" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
+
+You can also sponsor directly at [github.com/sponsors/balajimalathi](https://github.com/sponsors/balajimalathi).
