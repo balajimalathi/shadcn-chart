@@ -2,7 +2,6 @@ import './index.css'
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { ThemeProvider } from "@/components/theme-provider";
 import BarInteractive from "@/components/charts/BarInteractive";
 import BarMultiple from "@/components/charts/BarMultiple";
 import AreaInteractive from "@/components/charts/AreaInteractive";
@@ -32,8 +31,6 @@ if (!ComponentToRender) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <ComponentToRender />
-    </ThemeProvider>
+    <ComponentToRender />
   </StrictMode>
 );

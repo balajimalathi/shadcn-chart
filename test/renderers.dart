@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shadcn_chart/shadcn_chart.dart';
 
 void main() {
   const series = [
-    ChartSeries(key: 'desktop', label: 'Desktop', color: '#0f766e'),
-    ChartSeries(key: 'mobile', label: 'Mobile', color: '#ea580c'),
+    ChartSeries(key: 'desktop', label: 'Desktop', color: Color(0xff0f766e)),
+    ChartSeries(key: 'mobile', label: 'Mobile', color: Color(0xffea580c)),
   ];
 
   test('interactive line chart serializes to renderer payload', () {
@@ -12,7 +13,6 @@ void main() {
       title: 'Traffic',
       description: 'Last week',
       activeSeriesKey: 'mobile',
-      theme: ShadcnChartTheme.dark,
       series: series,
       data: [
         TimeSeriesPoint(
@@ -26,7 +26,6 @@ void main() {
     expect(chart.toJson(), {
       'title': 'Traffic',
       'description': 'Last week',
-      'theme': 'dark',
       'valueLabel': 'Page Views',
       'xKey': 'date',
       'xType': 'date',
@@ -39,6 +38,42 @@ void main() {
         {'date': '2026-06-01', 'desktop': 120, 'mobile': 98},
       ],
     });
+  });
+
+  test('charts can serialize fallback Flutter color palettes', () {
+    final chart = InteractiveLineChartData(
+      colors: const [Colors.red, Color(0x802196f3)],
+      series: const [
+        ChartSeries(key: 'desktop', label: 'Desktop'),
+        ChartSeries(key: 'mobile', label: 'Mobile', color: Colors.teal),
+      ],
+      data: [
+        TimeSeriesPoint(
+          date: DateTime(2026, 6, 1),
+          values: const {'desktop': 120, 'mobile': 98},
+        ),
+      ],
+    );
+
+    expect(chart.toJson()['colors'], ['#f44336', '#2196f380']);
+    expect(chart.toJson()['series'], [
+      {'key': 'desktop', 'label': 'Desktop'},
+      {'key': 'mobile', 'label': 'Mobile', 'color': '#009688'},
+    ]);
+  });
+
+  test('chart titles are optional', () {
+    final chart = InteractiveLineChartData(
+      series: const [ChartSeries(key: 'desktop', label: 'Desktop')],
+      data: [
+        TimeSeriesPoint(
+          date: DateTime(2026, 6, 1),
+          values: const {'desktop': 120},
+        ),
+      ],
+    );
+
+    expect(chart.toJson().containsKey('title'), isFalse);
   });
 
   test('interactive bar chart serializes active series', () {
@@ -104,7 +139,7 @@ void main() {
           key: 'safari',
           label: 'Safari',
           value: 200,
-          color: '#2563eb',
+          color: Color(0xff2563eb),
         ),
       ],
     );

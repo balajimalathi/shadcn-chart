@@ -30,7 +30,6 @@ import {
   CartesianChartPayload,
   chartConfigWithValue,
 } from "@/types/chart-data"
-import { useTheme } from "../theme-provider"
 
 const defaultPayload: CartesianChartPayload = {
   title: "Area Chart - Interactive",
@@ -60,8 +59,7 @@ const defaultPayload: CartesianChartPayload = {
 }
 
 export default function AreaInteractive() {
-  const { setTheme } = useTheme()
-  const payload = useFlutterChart(defaultPayload, setTheme)
+  const payload = useFlutterChart(defaultPayload)
   const [timeRange, setTimeRange] = React.useState(
     payload.defaultTimeRange ?? payload.timeRanges?.[0]?.value ?? "all",
   )
@@ -69,6 +67,7 @@ export default function AreaInteractive() {
     "visitors",
     payload.valueLabel ?? "Value",
     payload.series,
+    payload.colors,
   ) as ChartConfig
 
   React.useEffect(() => {
@@ -88,28 +87,32 @@ export default function AreaInteractive() {
 
   return (
     <Card>
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-3 sm:flex-row">
-        <div className="grid flex-1 gap-1 text-left">
-          <CardTitle>{payload.title}</CardTitle>
-          {payload.description ? (
-            <CardDescription>{payload.description}</CardDescription>
+      {payload.title || payload.description || payload.timeRanges?.length ? (
+        <CardHeader className="flex items-center gap-2 space-y-0 border-b py-3 sm:flex-row">
+          {payload.title || payload.description ? (
+            <div className="grid flex-1 gap-1 text-left">
+              {payload.title ? <CardTitle>{payload.title}</CardTitle> : null}
+              {payload.description ? (
+                <CardDescription>{payload.description}</CardDescription>
+              ) : null}
+            </div>
           ) : null}
-        </div>
-        {payload.timeRanges?.length ? (
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-[160px] rounded-lg sm:ml-auto" aria-label="Select a value">
-              <SelectValue placeholder={payload.timeRanges[0]?.label} />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl">
-              {payload.timeRanges.map((range) => (
-                <SelectItem key={range.value} value={range.value} className="rounded-lg">
-                  {range.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        ) : null}
-      </CardHeader>
+          {payload.timeRanges?.length ? (
+            <Select value={timeRange} onValueChange={setTimeRange}>
+              <SelectTrigger className="w-[160px] rounded-lg sm:ml-auto" aria-label="Select a value">
+                <SelectValue placeholder={payload.timeRanges[0]?.label} />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl">
+                {payload.timeRanges.map((range) => (
+                  <SelectItem key={range.value} value={range.value} className="rounded-lg">
+                    {range.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : null}
+        </CardHeader>
+      ) : null}
       <CardContent className="px-2 py-3 sm:px-4">
         <ChartContainer config={chartConfig}>
           <AreaChart data={filteredData}>

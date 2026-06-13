@@ -5,7 +5,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'shadcn_chart_models.dart';
 
 /// Controls a mounted [ShadcnChartView] via JavaScript bridge functions
-/// (`window.updateChartData`, `window.setTheme`).
+/// such as `window.updateChartData`.
 ///
 /// Scripts queued before the WebView attaches run automatically on [attach].
 class ShadcnChartController {
@@ -14,12 +14,8 @@ class ShadcnChartController {
 
   /// Replaces chart data without rebuilding the WebView.
   Future<void> updateData(ShadcnChartData data) {
-    return _evaluate('window.updateChartData(${jsonEncode(data.toJson())});');
-  }
-
-  /// Switches the embedded theme (`light`, `dark`, or `system`).
-  Future<void> setTheme(ShadcnChartTheme theme) {
-    return _evaluate('window.setTheme(${jsonEncode(theme.value)});');
+    final json = data.toJson();
+    return _evaluate('window.updateChartData(${jsonEncode(json)});');
   }
 
   /// Executes raw JavaScript in the chart WebView.
