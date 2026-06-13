@@ -7,7 +7,7 @@ runtime.
 **Platforms:** Android, iOS, macOS, Windows, and Web (via
 [`flutter_inappwebview`](https://pub.dev/packages/flutter_inappwebview)).
 
-![shadcn_chart example app on web](screenshots/preview.png)
+![shadcn_chart example app on web](https://raw.githubusercontent.com/balajimalathi/shadcn-chart/main/screenshots/preview.png)
 
 See the full example in [`example/lib/main.dart`](example/lib/main.dart).
 
@@ -15,7 +15,7 @@ See the full example in [`example/lib/main.dart`](example/lib/main.dart).
 
 ```yaml
 dependencies:
-  shadcn_chart: ^0.0.1
+  shadcn_chart: ^0.0.2
 ```
 
 ## Minimal usage

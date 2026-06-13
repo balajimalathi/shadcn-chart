@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-06-13
+
+### Fixed
+
+- README preview image on pub.dev now uses an absolute GitHub URL (relative paths
+  are not rendered in pub.dev READMEs).
+
 ### Changed
 
 - Declare supported platforms (Android, iOS, macOS, Windows, Web) in
