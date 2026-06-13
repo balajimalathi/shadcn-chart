@@ -4,6 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Interactive Bar Chart</title>
+<script>
+(function () {
+  var payloads = window.__chartBridgeEarlyPayloads || [];
+  var themes = window.__chartBridgeEarlyThemes || [];
+
+  function pushPayload(data) {
+    try {
+      payloads.push(typeof data === "string" ? JSON.parse(data) : data);
+      window.__chartBridgeEarlyPayloads = payloads;
+    } catch (error) {
+      console.error("chart bridge stub payload", error);
+    }
+  }
+
+  window.updateChartData = pushPayload;
+  window.setChartOptions = pushPayload;
+  window.setHostTheme = function (theme) {
+    try {
+      themes.push(typeof theme === "string" ? JSON.parse(theme) : theme);
+      window.__chartBridgeEarlyThemes = themes;
+    } catch (error) {
+      console.error("chart bridge stub theme", error);
+    }
+  };
+})();
+</script>
 </head>
 <body data-page="pie_legend">
   <div id="root"></div>

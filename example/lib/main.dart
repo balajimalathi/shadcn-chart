@@ -35,8 +35,8 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
           label: const Text('Refresh data'),
         ),
         body: GridView.count(
-          crossAxisCount: 3,
-          childAspectRatio: 1.25,
+          crossAxisCount: 2,
+          childAspectRatio: 1,
           padding: const EdgeInsets.all(16),
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
@@ -90,8 +90,8 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
   }
 
   InteractiveBarChartData _interactiveBar() => InteractiveBarChartData(
-        // title: 'Visitors by device',
-        // description: 'Interactive bar chart with selectable series',
+        title: 'Visitors by device',
+        description: 'Interactive bar chart with selectable series',
         series: _trafficSeries,
         activeSeriesKey: 'desktop',
         data: _trafficData,

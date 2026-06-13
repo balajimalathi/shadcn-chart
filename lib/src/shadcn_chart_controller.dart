@@ -14,7 +14,8 @@ class ShadcnChartController {
 
   /// Replaces chart data without rebuilding the WebView.
   Future<void> updateData(ShadcnChartData data) {
-    return _evaluate('window.updateChartData(${jsonEncode(data.toJson())});');
+    final json = data.toJson();
+    return _evaluate('window.updateChartData(${jsonEncode(json)});');
   }
 
   /// Executes raw JavaScript in the chart WebView.

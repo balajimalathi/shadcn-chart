@@ -145,7 +145,7 @@ class _ShadcnChartViewState extends State<ShadcnChartView> {
       onLoadStop: (controller, url) async {
         _hasLoaded = true;
         await _syncHostTheme(force: true);
-        await _controller.updateData(widget.data);
+        await _applyInitialChartData();
         widget.onLoadStop?.call(controller, url);
       },
       onReceivedError: widget.onReceivedError,
@@ -169,6 +169,23 @@ class _ShadcnChartViewState extends State<ShadcnChartView> {
 
   Future<String> _loadChartHtml() {
     return rootBundle.loadString(widget.data.type.packageAssetKey);
+  }
+
+  Future<void> _applyInitialChartData() async {
+    await _controller.updateData(widget.data);
+    if (!kIsWeb) {
+      return;
+    }
+
+    // Web iframes can finish navigation before the chart bundle installs
+    // window.updateChartData; retry so the first Dart payload is not lost.
+    for (final delayMs in const [50, 150, 400]) {
+      await Future<void>.delayed(Duration(milliseconds: delayMs));
+      if (!mounted) {
+        return;
+      }
+      await _controller.updateData(widget.data);
+    }
   }
 
   Future<void> _syncHostTheme({bool force = false}) async {
