@@ -17,7 +17,7 @@ See the full example in [`example/lib/main.dart`](example/lib/main.dart).
 
 ```yaml
 dependencies:
-  shadcn_chart: ^0.0.2
+  shadcn_chart: ^0.1.0
 ```
 
 ## Minimal usage
@@ -301,23 +301,6 @@ cd renderers
 npm install
 npm run build:package-assets
 ```
-
-## Pub health score
-
-Run [pana](https://pub.dev/packages/pana) on **Linux or CI** for an accurate
-pub.dev score. On Windows, local runs may report false failures:
-
-- **dartdoc crash** (`RangeError` in `_stripDocImports`): known dartdoc 9.0.2+
-  bug with Windows CRLF Flutter SDK offsets
-  ([dart-lang/dartdoc#4180](https://github.com/dart-lang/dartdoc/issues/4180)).
-  Workaround: `dart pub global run pana --dartdoc-version 9.0.0 .`
-- **Screenshot tools missing** (`webpinfo`, `cwebp`): install
-  [Google libwebp](https://developers.google.com/speed/webp/download) and add
-  its `bin` folder to `PATH`, or rely on CI / `flutter pub publish` (pub.dev
-  provides these tools).
-
-This package declares support for Android, iOS, macOS, Windows, and Web only
-(see `platforms` in `pubspec.yaml`).
 
 ## Contributing
 

@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-06-14
+
+### Added
+
+- Early payload support so chart data and host theme are applied before the React
+  bundle finishes loading (URL fragment encoding, bridge stub, and
+  `flutter-bridge-core` with unit tests).
+- VS Code launch configurations for the example app (debug, profile, and release).
+- Android and iOS platform scaffolding for the example app
+  (`com.skndan.flutter_chart`).
+- Light and dark theme pub.dev screenshots from the Android example app.
+
+### Changed
+
+- README and bundled chart HTML updated for color and theme consistency with the
+  host Flutter `Theme`.
+- `ShadcnChartView`, `ShadcnChartController`, and chart models updated for the
+  new bridge and loading flow.
+- Renderer bridge refactored; host theme is applied via CSS variables instead of
+  a standalone React theme provider.
+- Regenerated all seven bundled chart HTML assets under `assets/charts/`.
+- Example app layout and chart HTML module loading improved for React module
+  preload compatibility.
+
+### Fixed
+
+- First Dart payload no longer lost when the WebView loads before
+  `window.updateChartData` is available.
+- Android example builds pin AGP to 8.11.1 for compatibility with
+  `flutter_inappwebview_android` 1.1.3.
+
 ## [0.0.2] - 2026-06-13
 
 ### Fixed
