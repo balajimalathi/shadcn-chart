@@ -281,12 +281,28 @@ third-party license text.
 
 ## Maintaining chart assets
 
-The React/Vite source for the renderers lives in `shadcn-chart-template/`.
+The React/Vite source for the renderers lives in `renderers/`.
 After changing templates, rebuild the single-file HTML outputs and copy them to
 `assets/charts/` before publishing:
 
 ```bash
-cd shadcn-chart-template
+cd renderers
 npm install
 npm run build:package-assets
 ```
+
+## Contributing
+
+Contributions, feedback, and bug reports are welcome.
+
+- **Issues:** [Open an issue](https://github.com/balajimalathi/shadcn-chart/issues) if something breaks, a chart misbehaves, or you have a feature idea.
+- **Pull requests:** PRs are appreciated for fixes and improvements.
+- **Support:** I'm happy to look into reported issues and ship fixes.
+
+## Sponsor
+
+If this package helps your project, consider sponsoring ongoing maintenance:
+
+<iframe src="https://github.com/sponsors/balajimalathi/button" title="Sponsor balajimalathi" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
+
+You can also sponsor directly at [github.com/sponsors/balajimalathi](https://github.com/sponsors/balajimalathi).
