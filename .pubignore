@@ -1,0 +1,5 @@
+shadcn-chart-template/
+build/
+.idea/
+*.iml
+doc/

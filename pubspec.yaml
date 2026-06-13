@@ -1,0 +1,43 @@
+name: shadcn_chart
+description: Flutter widgets for rendering shadcn/ui Recharts charts through in-app WebViews.
+version: 0.0.1
+homepage: https://github.com/balajimalathi/shadcn-chart
+repository: https://github.com/balajimalathi/shadcn-chart
+issue_tracker: https://github.com/balajimalathi/shadcn-chart/issues
+topics:
+  - charts
+  - shadcn
+  - recharts
+  - webview
+  - data-visualization
+
+# Uncomment after adding PNG files under screenshots/
+# screenshots:
+#   - description: Interactive line chart (light theme)
+#     path: screenshots/line-chart-light.png
+#   - description: Interactive line chart (dark theme)
+#     path: screenshots/line-chart-dark.png
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_inappwebview: ^6.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  assets:
+    - assets/charts/area-interactive.html
+    - assets/charts/bar-interactive.html
+    - assets/charts/bar-multiple.html
+    - assets/charts/line-interactive.html
+    - assets/charts/pie-donut.html
+    - assets/charts/pie-legend.html
+    - assets/charts/radial-stacked.html
