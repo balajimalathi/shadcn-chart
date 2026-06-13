@@ -7,6 +7,8 @@ runtime.
 **Platforms:** Android, iOS, macOS, Windows, and Web (via
 [`flutter_inappwebview`](https://pub.dev/packages/flutter_inappwebview)).
 
+![shadcn_chart example app on web](screenshots/preview.png)
+
 See the full example in [`example/lib/main.dart`](example/lib/main.dart).
 
 ## Installation
@@ -224,10 +226,6 @@ All typed chart classes expose `toJson()`, which is the payload sent to the
 embedded renderer.
 
 ## Screenshots
-
-Example app running on web:
-
-![shadcn_chart example app on web](screenshots/preview.png)
 
 More platform screenshots will be added after the first pub.dev release.
 
