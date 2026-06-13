@@ -1,5 +1,3 @@
-export type ChartTheme = "light" | "dark" | "system"
-
 export type ChartValue = string | number
 
 export type ChartDatum = Record<string, ChartValue>
@@ -17,11 +15,11 @@ export interface TimeRangeOption {
 }
 
 export interface BaseChartPayload {
-  title: string
+  title?: string
   description?: string
   footerTitle?: string
   footerDescription?: string
-  theme?: ChartTheme
+  colors?: string[]
 }
 
 export interface CartesianChartPayload extends BaseChartPayload {
@@ -49,13 +47,16 @@ export interface RadialChartPayload extends BaseChartPayload {
   centerLabel?: string
 }
 
-export function chartConfigFromSeries(series: ChartSeries[]) {
+export function chartConfigFromSeries(series: ChartSeries[], colors?: string[]) {
   return Object.fromEntries(
     series.map((item, index) => [
       item.key,
       {
         label: item.label,
-        color: item.color ?? `hsl(var(--chart-${(index % 5) + 1}))`,
+        color:
+          item.color ??
+          colors?.[index] ??
+          `var(--chart-${(index % 5) + 1})`,
       },
     ]),
   )
@@ -65,9 +66,10 @@ export function chartConfigWithValue(
   valueKey: string,
   valueLabel: string,
   series: ChartSeries[],
+  colors?: string[],
 ) {
   return {
     [valueKey]: { label: valueLabel },
-    ...chartConfigFromSeries(series),
+    ...chartConfigFromSeries(series, colors),
   }
 }

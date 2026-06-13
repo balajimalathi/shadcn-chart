@@ -1,13 +1,40 @@
 import { useEffect, useState } from "react"
-import type { BaseChartPayload, ChartTheme } from "@/types/chart-data"
-import type { Theme } from "@/components/theme-provider"
+import type { BaseChartPayload } from "@/types/chart-data"
+
+type HostThemePayload = Record<string, string>
 
 type BridgeWindow<T> = Window &
   typeof globalThis & {
     updateChartData?: (newData: string | Partial<T>) => void
     setChartOptions?: (newData: string | Partial<T>) => void
-    setTheme?: (newTheme: ChartTheme) => void
+    setHostTheme?: (theme: string | HostThemePayload) => void
   }
+
+const hostThemeVariables: Record<string, string> = {
+  background: "--background",
+  foreground: "--foreground",
+  card: "--card",
+  cardForeground: "--card-foreground",
+  popover: "--popover",
+  popoverForeground: "--popover-foreground",
+  primary: "--primary",
+  primaryForeground: "--primary-foreground",
+  secondary: "--secondary",
+  secondaryForeground: "--secondary-foreground",
+  muted: "--muted",
+  mutedForeground: "--muted-foreground",
+  accent: "--accent",
+  accentForeground: "--accent-foreground",
+  destructive: "--destructive",
+  border: "--border",
+  input: "--input",
+  ring: "--ring",
+  chart1: "--chart-1",
+  chart2: "--chart-2",
+  chart3: "--chart-3",
+  chart4: "--chart-4",
+  chart5: "--chart-5",
+}
 
 function parseBridgePayload<T>(newData: string | Partial<T>): Partial<T> {
   if (typeof newData === "string") {
@@ -15,6 +42,24 @@ function parseBridgePayload<T>(newData: string | Partial<T>): Partial<T> {
   }
 
   return newData
+}
+
+function applyHostTheme(newTheme: string | HostThemePayload) {
+  const theme =
+    typeof newTheme === "string"
+      ? (JSON.parse(newTheme) as HostThemePayload)
+      : newTheme
+  const root = document.documentElement
+
+  root.classList.toggle("dark", theme.brightness === "dark")
+  root.classList.toggle("light", theme.brightness === "light")
+
+  for (const [key, variable] of Object.entries(hostThemeVariables)) {
+    const value = theme[key]
+    if (value) {
+      root.style.setProperty(variable, value)
+    }
+  }
 }
 
 function canScrollLocally(event: WheelEvent) {
@@ -88,10 +133,7 @@ function forwardWheelToParent(event: WheelEvent) {
   target.dispatchEvent(forwardedEvent)
 }
 
-export function useFlutterChart<T extends BaseChartPayload>(
-  defaults: T,
-  setTheme: (theme: Theme) => void,
-) {
+export function useFlutterChart<T extends BaseChartPayload>(defaults: T) {
   const [payload, setPayload] = useState<T>(defaults)
 
   useEffect(() => {
@@ -101,14 +143,6 @@ export function useFlutterChart<T extends BaseChartPayload>(
       try {
         const parsed = parseBridgePayload<T>(newData)
         setPayload((current) => ({ ...current, ...parsed }))
-
-        if (
-          parsed.theme === "dark" ||
-          parsed.theme === "light" ||
-          parsed.theme === "system"
-        ) {
-          setTheme(parsed.theme)
-        }
       } catch (error) {
         console.error("Invalid chart JSON from Flutter:", newData)
         console.error(error)
@@ -117,12 +151,15 @@ export function useFlutterChart<T extends BaseChartPayload>(
 
     bridgeWindow.updateChartData = applyPayload
     bridgeWindow.setChartOptions = applyPayload
-    bridgeWindow.setTheme = (newTheme: ChartTheme) => {
-      if (newTheme === "dark" || newTheme === "light" || newTheme === "system") {
-        setTheme(newTheme)
+    bridgeWindow.setHostTheme = (newTheme: string | HostThemePayload) => {
+      try {
+        applyHostTheme(newTheme)
+      } catch (error) {
+        console.error("Invalid host theme from Flutter:", newTheme)
+        console.error(error)
       }
     }
-  }, [setTheme])
+  }, [])
 
   useEffect(() => {
     window.addEventListener("wheel", forwardWheelToParent, { passive: false })

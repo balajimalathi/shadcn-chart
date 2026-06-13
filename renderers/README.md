@@ -87,7 +87,7 @@ Each built renderer exposes:
 
 - `window.updateChartData(json)` to replace chart data/options.
 - `window.setChartOptions(json)` as an alias for partial option updates.
-- `window.setTheme("light" | "dark" | "system")`.
+- `window.setHostTheme(json)` to apply Flutter Material theme colors as CSS variables.
 
 The Dart package owns the typed models and serializes them into the JSON shape
 consumed by these functions.

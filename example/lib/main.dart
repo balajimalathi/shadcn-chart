@@ -13,7 +13,6 @@ class ChartExampleApp extends StatefulWidget {
 }
 
 class _ChartExampleAppState extends State<ChartExampleApp> {
-  ShadcnChartTheme _chartTheme = ShadcnChartTheme.system;
   int _revision = 0;
 
   @override
@@ -29,24 +28,6 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('shadcn_chart example'),
-          actions: [
-            SegmentedButton<ShadcnChartTheme>(
-              showSelectedIcon: false,
-              segments: const [
-                ButtonSegment(
-                    value: ShadcnChartTheme.system, label: Text('System')),
-                ButtonSegment(
-                    value: ShadcnChartTheme.light, label: Text('Light')),
-                ButtonSegment(
-                    value: ShadcnChartTheme.dark, label: Text('Dark')),
-              ],
-              selected: {_chartTheme},
-              onSelectionChanged: (value) {
-                setState(() => _chartTheme = value.first);
-              },
-            ),
-            const SizedBox(width: 12),
-          ],
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () => setState(() => _revision++),
@@ -74,8 +55,8 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
   }
 
   List<ChartSeries> get _trafficSeries => const [
-        ChartSeries(key: 'desktop', label: 'Desktop', color: '#0f766e'),
-        ChartSeries(key: 'mobile', label: 'Mobile', color: '#ea580c'),
+        ChartSeries(key: 'desktop', label: 'Desktop', color: Colors.teal),
+        ChartSeries(key: 'mobile', label: 'Mobile', color: Colors.deepOrange),
       ];
 
   List<TimeSeriesPoint> get _trafficData {
@@ -109,9 +90,8 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
   }
 
   InteractiveBarChartData _interactiveBar() => InteractiveBarChartData(
-        title: 'Visitors by device',
-        description: 'Interactive bar chart with selectable series',
-        theme: _chartTheme,
+        // title: 'Visitors by device',
+        // description: 'Interactive bar chart with selectable series',
         series: _trafficSeries,
         activeSeriesKey: 'desktop',
         data: _trafficData,
@@ -120,7 +100,6 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
   InteractiveLineChartData _interactiveLine() => InteractiveLineChartData(
         title: 'Visitors trend',
         description: 'Interactive line chart with selectable series',
-        theme: _chartTheme,
         series: _trafficSeries,
         activeSeriesKey: 'mobile',
         data: _trafficData,
@@ -129,7 +108,6 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
   AreaChartData _area() => AreaChartData(
         title: 'Visitors over time',
         description: 'Area chart with range filtering',
-        theme: _chartTheme,
         series: _trafficSeries,
         referenceDate: DateTime(2026, 6, 30),
         data: _trafficData,
@@ -140,7 +118,6 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
         description: 'January - June 2026',
         footerTitle: 'Trending up by ${5 + _revision}.2% this month',
         footerDescription: 'Grouped desktop and mobile totals',
-        theme: _chartTheme,
         series: _trafficSeries,
         data: [
           CategorySeriesPoint(
@@ -175,31 +152,31 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
           key: 'chrome',
           label: 'Chrome',
           value: 275 + _revision,
-          color: '#0f766e',
+          color: Colors.teal,
         ),
         PieChartSegment(
           key: 'safari',
           label: 'Safari',
           value: 200 + _revision,
-          color: '#ea580c',
+          color: Colors.deepOrange,
         ),
         PieChartSegment(
           key: 'firefox',
           label: 'Firefox',
           value: 187 + _revision,
-          color: '#2563eb',
+          color: Colors.blue,
         ),
         PieChartSegment(
           key: 'edge',
           label: 'Edge',
           value: 173 + _revision,
-          color: '#7c3aed',
+          color: Colors.deepPurple,
         ),
         PieChartSegment(
           key: 'other',
           label: 'Other',
           value: 90 + _revision,
-          color: '#f59e0b',
+          color: Colors.amber,
         ),
       ];
 
@@ -208,14 +185,12 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
         description: 'Donut chart',
         footerTitle: 'Trending up by 5.2% this month',
         footerDescription: 'Total visitors by browser',
-        theme: _chartTheme,
         segments: _browserSegments,
       );
 
   PieLegendChartData _pieLegend() => PieLegendChartData(
         title: 'Browser legend',
         description: 'Pie chart with legend',
-        theme: _chartTheme,
         segments: _browserSegments,
       );
 
@@ -225,7 +200,6 @@ class _ChartExampleAppState extends State<ChartExampleApp> {
         footerTitle: 'Trending up by 5.2% this month',
         footerDescription: 'Desktop and mobile visitors',
         centerLabel: 'Visitors',
-        theme: _chartTheme,
         series: _trafficSeries,
         values: {
           'desktop': 1260 + (_revision * 10),

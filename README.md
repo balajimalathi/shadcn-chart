@@ -36,10 +36,13 @@ class TrafficChart extends StatelessWidget {
           title: 'Visitors',
           description: 'Last 7 days',
           activeSeriesKey: 'desktop',
-          theme: ShadcnChartTheme.system,
           series: const [
-            ChartSeries(key: 'desktop', label: 'Desktop', color: '#0f766e'),
-            ChartSeries(key: 'mobile', label: 'Mobile', color: '#ea580c'),
+            ChartSeries(key: 'desktop', label: 'Desktop', color: Colors.teal),
+            ChartSeries(
+              key: 'mobile',
+              label: 'Mobile',
+              color: Colors.deepOrange,
+            ),
           ],
           data: [
             TimeSeriesPoint(
@@ -195,13 +198,12 @@ ShadcnChartView(
 );
 
 await controller.updateData(nextChartData);
-await controller.setTheme(ShadcnChartTheme.dark);
 ```
 
 ## Data types
 
 `ChartSeries`
-: Defines a numeric series with `key`, `label`, and optional CSS `color`.
+: Defines a numeric series with `key`, `label`, and optional Flutter `Color`.
 The `key` must match a value in each point.
 
 `TimeSeriesPoint`
@@ -217,13 +219,19 @@ and `days`.
 
 `PieChartSegment`
 : Segment for `PieDonutChartData` and `PieLegendChartData`, with `key`,
-`label`, `value`, and optional CSS `color`.
+`label`, `value`, and optional Flutter `Color`.
 
 `RadialStackedChartData`
 : Uses a single `values` map keyed by `ChartSeries.key`.
 
 All typed chart classes expose `toJson()`, which is the payload sent to the
 embedded renderer.
+
+Titles, descriptions, footer titles, and footer descriptions are optional. When
+they are omitted, the renderer hides the corresponding text area. Charts inherit
+the host Flutter `Theme.of(context)` colors automatically. For chart-specific
+colors, pass `Color` values on individual series/segments, or pass a chart-level
+`colors: <Color>[...]` palette.
 
 ## Screenshots
 
